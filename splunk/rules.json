@@ -1,0 +1,92 @@
+[
+  {
+    "rule_name": "Detect_SQL_Injection_Attempt",
+    "query": "index=web_logs | uri_query=\"*SELECT*\" OR uri_query=\"*UNION*\" OR uri_query=\"*1=1*\"",
+    "severity": "high",
+    "description": "OWASP A03: URL-də SQL açar sözləri ilə sızma cəhdləri."
+  },
+  {
+    "rule_name": "Brute_Force_Successful_Login",
+    "query": "index=auth_logs | stats count(eval(status=\"failed\")) as failures, count(eval(status=\"success\")) as successes by user | where failures > 10 AND successes > 0",
+    "severity": "critical",
+    "description": "Çoxlu uğursuzluqdan sonra gələn uğurlu giriş."
+  },
+  {
+    "rule_name": "Suspicious_PowerShell_EncodedCommand",
+    "query": "index=windows_logs process_name=\"powershell.exe\" (command_line=\"*-EncodedCommand*\" OR command_line=\"*-e *\")",
+    "severity": "high",
+    "description": "Base64 ilə gizlədilmiş PowerShell komandaları."
+  },
+  {
+    "rule_name": "Internal_Port_Scanning",
+    "query": "index=firewall_logs | stats dc(dest_port) as port_count by src_ip | where port_count > 20",
+    "severity": "medium",
+    "description": "Şəbəkə daxili port darama cəhdləri."
+  },
+  {
+    "rule_name": "Data_Exfiltration_HTTP",
+    "query": "index=web_proxy | stats sum(bytes_out) as total_out by src_ip, dest_domain | where total_out > 500000000",
+    "severity": "high",
+    "description": "Xarici domenə böyük həcmdə məlumat ötürülməsi."
+  },
+  {
+    "rule_name": "New_Admin_User_Created",
+    "query": "index=windows_logs EventCode=4720 OR EventCode=4732",
+    "severity": "critical",
+    "description": "Sistemdə yeni Admin istifadəçisinin yaradılması."
+  },
+  {
+    "rule_name": "Cleartext_Password_in_Command_Line",
+    "query": "index=os_logs (command_line=\"*password=*\" OR command_line=\"*pass=*\" OR command_line=\"*pwd=*\")",
+    "severity": "high",
+    "description": "Komanda sətirində açıq şifrə istifadəsi."
+  },
+  {
+    "rule_name": "Suspicious_Certutil_Download",
+    "query": "index=windows_logs process_name=\"certutil.exe\" command_line=\"*-urlcache*\"",
+    "severity": "high",
+    "description": "Certutil vasitəsilə internetdən zərərli fayl yüklənməsi."
+  },
+  {
+    "rule_name": "Excessive_Account_Lockouts",
+    "query": "index=auth_logs EventCode=4740 | stats count by user | where count > 5",
+    "severity": "medium",
+    "description": "Eyni istifadəçinin hesabının dəfələrlə bloklanması."
+  },
+  {
+    "rule_name": "Lateral_Movement_PsExec",
+    "query": "index=windows_logs process_name=\"psexesvc.exe\" OR command_line=\"*PSEXEC*\"",
+    "severity": "high",
+    "description": "PsExec vasitəsilə şəbəkə daxili hərəkət."
+  },
+  {
+    "rule_name": "Unusual_Outbound_to_Unknown_IP",
+    "query": "index=network_logs dest_port=443 | iplocation dest_ip | where isnull(Country)",
+    "severity": "medium",
+    "description": "Tanınmayan və ya şübhəli IP-lərə xarici trafik."
+  },
+  {
+    "rule_name": "Scheduled_Task_Persistence",
+    "query": "index=windows_logs EventCode=4698",
+    "severity": "high",
+    "description": "Sistemdə qalıcı olmaq üçün yeni Task yaradılması."
+  },
+  {
+    "rule_name": "Registry_Startup_Modification",
+    "query": "index=windows_logs object_path=\"*\\CurrentVersion\\Run*\"",
+    "severity": "high",
+    "description": "Windows Registry-də Startup hissəsinə müdaxilə."
+  },
+  {
+    "rule_name": "Log_Clearing_Attempt",
+    "query": "index=windows_logs (EventCode=1102 OR command_line=\"*wevtutil cl*\")",
+    "severity": "critical",
+    "description": "Hücum izlərini silmək üçün loqların təmizlənməsi."
+  },
+  {
+    "rule_name": "Web_Shell_Execution",
+    "query": "index=web_logs (process_name=\"cmd.exe\" OR process_name=\"/bin/sh\") parent_process=\"*w3wp.exe*\"",
+    "severity": "critical",
+    "description": "Veb server üzərindən əmr icra edilməsi (Web Shell)."
+  }
+]
