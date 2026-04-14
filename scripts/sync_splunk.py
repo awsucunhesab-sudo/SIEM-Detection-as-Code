@@ -6,7 +6,7 @@ import urllib3
 # SSL xəbərdarlıqlarını söndürürük
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-SPLUNK_HOST = "51.20.51.159" # Sənin Splunk IP-n
+SPLUNK_HOST = "13.63.163.57" # Sənin Splunk IP-n
 SPLUNK_PORT = "8089"
 SPLUNK_USER = "admin"
 SPLUNK_PASS = os.getenv("SPLUNK_PASSWORD") # Şifrəni gizli yerdən götürəcəyik
