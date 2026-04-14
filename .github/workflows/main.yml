@@ -1,9 +1,9 @@
 name: SIEM Rule Sync
 on:
   push:
-    paths:
-      - 'splunk/**'
-      - 'qradar/**'
+    branches:
+      - main  # Main-ə hər push olanda işləsin
+  workflow_dispatch: # Bu sətir bizə "Run workflow" düyməsini verəcək (Manual işə salmaq üçün)
 
 jobs:
   build:
