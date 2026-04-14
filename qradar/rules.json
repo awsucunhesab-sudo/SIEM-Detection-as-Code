@@ -1,0 +1,62 @@
+[
+  {
+    "rule_name": "Lateral_Movement_Detected",
+    "query": "SELECT * FROM events WHERE devicetype=12 AND eventid='4624' AND logontype=3",
+    "severity": "high",
+    "description": "Şəbəkə daxilində bir maşından digərinə şübhəli giriş cəhdləri."
+  },
+  {
+    "rule_name": "Pass_the_Hash_Attack",
+    "query": "SELECT * FROM events WHERE eventid='4624' AND authenticationpackage='NTLM' AND keylength=0",
+    "severity": "critical",
+    "description": "NTLM loqları vasitəsilə Pass-the-Hash hücumunun aşkarlanması."
+  },
+  {
+    "rule_name": "DNS_Tunneling_Detection",
+    "query": "SELECT sourcename, SUM(payload_size) as total_size FROM events WHERE qid=5000023 GROUP BY sourcename HAVING total_size > 1000000",
+    "severity": "high",
+    "description": "DNS protokolu vasitəsilə gizli məlumat sızdırılması cəhdi."
+  },
+  {
+    "rule_name": "Impossible_Travel_Activity",
+    "query": "SELECT username, count(distinct sourceip) as locations FROM events GROUP BY username HAVING locations > 2",
+    "severity": "high",
+    "description": "Eyni istifadəçinin qısa müddətdə müxtəlif coğrafi yerlərdən girişi."
+  },
+  {
+    "rule_name": "Multiple_Account_Lockouts_Source",
+    "query": "SELECT sourceip, count(*) as lockouts FROM events WHERE eventid='4740' GROUP BY sourceip HAVING lockouts > 3",
+    "severity": "medium",
+    "description": "Bir IP-dən bir neçə fərqli hesabın bloklanmasına səbəb olan cəhdlər."
+  },
+  {
+    "rule_name": "Web_Shell_Creation_Detection",
+    "query": "SELECT * FROM events WHERE filename LIKE '%.php' OR filename LIKE '%.jsp' AND eventtype='FileCreated'",
+    "severity": "critical",
+    "description": "Veb serverdə şübhəli idarəetmə fayllarının yaradılması."
+  },
+  {
+    "rule_name": "Unauthorized_API_Key_Usage",
+    "query": "SELECT * FROM events WHERE api_method='DELETE' AND status_code=403",
+    "severity": "high",
+    "description": "İcazəsiz API açarı ilə kritik məlumatların silinməsi cəhdi."
+  },
+  {
+    "rule_name": "Registry_Persistence_Attempt",
+    "query": "SELECT * FROM events WHERE objectname LIKE '%CurrentVersion\\Run%'",
+    "severity": "high",
+    "description": "Windows Registry-də avtomatik işə düşmə (Persistence) yaratmaq cəhdi."
+  },
+  {
+    "rule_name": "Suspicious_Scheduled_Task",
+    "query": "SELECT * FROM events WHERE eventid='4698' AND taskname LIKE '%temp%'",
+    "severity": "medium",
+    "description": "Temp qovluqlarından işə düşən şübhəli zamanlanmış tapşırıq."
+  },
+  {
+    "rule_name": "Anomalous_System_Process_Spawn",
+    "query": "SELECT * FROM events WHERE parentprocessname='lsass.exe' AND processname!='svchost.exe'",
+    "severity": "critical",
+    "description": "Lsass prosesindən naməlum prosesin törəməsi (Credential Dumping əlaməti)."
+  }
+]
