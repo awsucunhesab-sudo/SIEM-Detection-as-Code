@@ -1,1 +1,1 @@
-# SIEM-Detection-as-Code
+# SIEM-Detection-as-Code.
